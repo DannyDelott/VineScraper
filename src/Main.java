@@ -1,3 +1,4 @@
+import twitter4j.FilterQuery;
 import twitter4j.TwitterStream;
 
 public class Main {
@@ -8,6 +9,11 @@ public class Main {
 
 		// Connects to the Streaming API
 		twitter = TwitterStreamBuilderUtil.getStream();
+
+		// sets keyword to track
+		FilterQuery fq = new FilterQuery();
+		String keyword[] = { "http" };
+		fq.track(keyword);
 	}
 
 }
