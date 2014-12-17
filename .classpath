@@ -2,5 +2,15 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="Twitter4J/twitter4j-async-4.0.2.jar"/>
+	<classpathentry kind="lib" path="Twitter4J/twitter4j-core-4.0.2.jar"/>
+	<classpathentry kind="lib" path="Twitter4J/twitter4j-examples-4.0.2.jar"/>
+	<classpathentry kind="lib" path="Twitter4J/twitter4j-media-support-4.0.2.jar"/>
+	<classpathentry kind="lib" path="Twitter4J/twitter4j-stream-4.0.2.jar"/>
+	<classpathentry kind="lib" path="Apache Commons IO/commons-io-2.4.jar" sourcepath="Apache Commons IO/commons-io-2.4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/VineScraper/Apache%20Commons%20IO/commons-io-2.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
