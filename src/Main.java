@@ -83,24 +83,25 @@ public class Main {
 
 	private static void processCurrentBuffer() {
 
-		// if both buffers are currently processing, do nothing.
-		if (buffer1.isProcessing() && buffer2.isProcessing()) {
+		// Does nothing if the current buffer is already processing or
+		// if it contains fewer elements than the minimum buffer size.
+		if ((currentBuffer == 1 && (buffer1.isProcessing() || buffer1
+				.getTweets().size() < MIN_BUFFER_SIZE))
+				|| (currentBuffer == 2 && (buffer2.isProcessing() || buffer2
+						.getTweets().size() < MIN_BUFFER_SIZE))) {
 			return;
 		}
 
-		// gets the current buffer
-		TweetBuffer tempBuffer = null;
+		// Otherwise, set current buffer to processing state and create bundle.
 		if (currentBuffer == 1) {
-			tempBuffer = buffer1;
-		} else if (currentBuffer == 2) {
-			tempBuffer = buffer2;
-		} else {
-			return;
-		}
+			buffer1.setProcessing(true);
 
-		// buffer must contain at least 10 tweet objects
-		if (tempBuffer.getTweets().size() < 10) {
-			return;
+		} else {
+			if (currentBuffer == 2) {
+				buffer2.setProcessing(true);
+			} else {
+				return;
+			}
 		}
 	}
 }
