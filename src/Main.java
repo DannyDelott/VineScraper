@@ -10,9 +10,12 @@ import twitter4j.TwitterStream;
 public class Main {
 
 	private static TwitterStream twitter;
+	private static final String SAVE_DIRECTORY = "vines/";
+	private static final int NUM_VINES_TO_DOWNLOAD = 10;
+	private static int numVinesScraped = 0;
 
-	private static TweetBuffer buffer1;
-	private static TweetBuffer buffer2;
+	private static TweetBuffer buffer1, buffer2;
+	private static final int MIN_BUFFER_SIZE = 10;
 	private static int currentBuffer;
 	private static HashSet<String> urls;
 
@@ -76,5 +79,28 @@ public class Main {
 		// starts scraping Vine videos
 		twitter.addListener(listener);
 		twitter.filter(fq);
+	}
+
+	private static void processCurrentBuffer() {
+
+		// if both buffers are currently processing, do nothing.
+		if (buffer1.isProcessing() && buffer2.isProcessing()) {
+			return;
+		}
+
+		// gets the current buffer
+		TweetBuffer tempBuffer = null;
+		if (currentBuffer == 1) {
+			tempBuffer = buffer1;
+		} else if (currentBuffer == 2) {
+			tempBuffer = buffer2;
+		} else {
+			return;
+		}
+
+		// buffer must contain at least 10 tweet objects
+		if (tempBuffer.getTweets().size() < 10) {
+			return;
+		}
 	}
 }
