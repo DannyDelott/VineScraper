@@ -6,16 +6,14 @@ public class ProcessingBundle {
 
 	private HashSet<Status> tweets;
 	private int buffer;
-	private int numVinesScraped;
-	private String savedDirectory;
+	private String saveDirectory;
 
 	// constructor
 	public ProcessingBundle(HashSet<Status> tweets, int buffer,
-			int numVinesScraped, String saveDirectory) {
+			String saveDirectory) {
 		this.tweets = tweets;
 		this.buffer = buffer;
-		this.numVinesScraped = numVinesScraped;
-		this.savedDirectory = saveDirectory;
+		this.saveDirectory = saveDirectory;
 	}
 
 	// getters
@@ -27,12 +25,8 @@ public class ProcessingBundle {
 		return buffer;
 	}
 
-	public int getNumVinesScraped() {
-		return numVinesScraped;
-	}
-
 	public String getSaveDirectory() {
-		return savedDirectory;
+		return saveDirectory;
 	}
 
 }

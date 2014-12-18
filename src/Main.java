@@ -10,9 +10,9 @@ import twitter4j.TwitterStream;
 public class Main {
 
 	private static TwitterStream twitter;
-	private static final String SAVE_DIRECTORY = "vines/";
-	private static final int NUM_VINES_TO_DOWNLOAD = -1;
 	private static int numVinesScraped = 0;
+	private static final int NUM_VINES_TO_DOWNLOAD = -1;
+	private static final String SAVE_DIRECTORY = "vines/";
 
 	private static TweetBuffer buffer1, buffer2;
 	private static final int MIN_BUFFER_SIZE = 10;
@@ -92,18 +92,19 @@ public class Main {
 			return;
 		}
 
+		// Otherwise, begin processing.
 		ProcessingBundle bundle = null;
-
-		// Otherwise, sets current buffer to processing state and create bundle.
 		if (currentBuffer == 1) {
 			buffer1.setProcessing(true);
-			bundle = new ProcessingBundle(buffer1.getTweets(), 1,
-					numVinesScraped, SAVE_DIRECTORY);
+			bundle = new ProcessingBundle(buffer1.getTweets(), currentBuffer,
+					SAVE_DIRECTORY);
+			currentBuffer = 2;
 		} else {
 			if (currentBuffer == 2) {
 				buffer2.setProcessing(true);
-				bundle = new ProcessingBundle(buffer2.getTweets(), 2,
-						numVinesScraped, SAVE_DIRECTORY);
+				bundle = new ProcessingBundle(buffer2.getTweets(),
+						currentBuffer, SAVE_DIRECTORY);
+				currentBuffer = 1;
 			} else {
 				return;
 			}
