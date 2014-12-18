@@ -11,7 +11,7 @@ public class Main {
 
 	private static TwitterStream twitter;
 	private static final String SAVE_DIRECTORY = "vines/";
-	private static final int NUM_VINES_TO_DOWNLOAD = 10;
+	private static final int NUM_VINES_TO_DOWNLOAD = -1;
 	private static int numVinesScraped = 0;
 
 	private static TweetBuffer buffer1, buffer2;
@@ -92,16 +92,22 @@ public class Main {
 			return;
 		}
 
-		// Otherwise, set current buffer to processing state and create bundle.
+		ProcessingBundle bundle = null;
+
+		// Otherwise, sets current buffer to processing state and create bundle.
 		if (currentBuffer == 1) {
 			buffer1.setProcessing(true);
-
+			bundle = new ProcessingBundle(buffer1.getTweets(), 1,
+					numVinesScraped, SAVE_DIRECTORY);
 		} else {
 			if (currentBuffer == 2) {
 				buffer2.setProcessing(true);
+				bundle = new ProcessingBundle(buffer2.getTweets(), 2,
+						numVinesScraped, SAVE_DIRECTORY);
 			} else {
 				return;
 			}
 		}
+
 	}
 }
