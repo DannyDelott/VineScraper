@@ -6,19 +6,19 @@ import twitter4j.Status;
 public class ProcessingThread implements Runnable {
 
 	private HashSet<Status> tweets;
-	private int buffer;
+	private int bufferId;
 	private HashSet<String> urls;
 	private int numVinesScraped = 0;
 	private String saveDirectory;
 	private ProcessingListener listener;
 
 	// constructor
-	public ProcessingThread(ProcessingBundle bundle, HashSet<String> urls,
+	public ProcessingThread(TweetBuffer buffer, HashSet<String> urls,
 			ProcessingListener listener) {
 
-		this.tweets = new HashSet<Status>(bundle.getTweets());
-		this.buffer = bundle.getBuffer();
-		this.saveDirectory = bundle.getSaveDirectory();
+		this.tweets = new HashSet<Status>(buffer.getTweets());
+		this.bufferId = buffer.getId();
+		this.saveDirectory = buffer.getSaveDirectory();
 		this.urls = urls;
 		this.listener = listener;
 	}
@@ -78,7 +78,7 @@ public class ProcessingThread implements Runnable {
 		}
 
 		// invokes finished listener
-		listener.onProcessFinished(buffer, urls, numVinesScraped);
+		listener.onProcessFinished(bufferId, urls, numVinesScraped);
 	}
 
 	// getters
