@@ -29,14 +29,6 @@ public class TweetBuffer {
 	}
 
 	// getters
-	public HashSet<Status> getTweets() {
-		return tweets;
-	}
-
-	public boolean isProcessing() {
-		return isProcessing;
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -45,8 +37,16 @@ public class TweetBuffer {
 		return saveDirectory;
 	}
 
+	public HashSet<Status> getTweets() {
+		return tweets;
+	}
+
+	public boolean isProcessing() {
+		return isProcessing;
+	}
+
 	// setters
-	public void setProcessing(boolean isProcessing) {
-		this.isProcessing = isProcessing;
+	public void setProcessing(boolean processing) {
+		isProcessing = processing;
 	}
 }
