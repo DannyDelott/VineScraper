@@ -30,8 +30,8 @@ public class Main {
 		fq.track(keyword);
 
 		// instantiates buffers
-		buffer1 = new TweetBuffer();
-		buffer2 = new TweetBuffer();
+		buffer1 = new TweetBuffer(1, SAVE_DIRECTORY);
+		buffer2 = new TweetBuffer(2, SAVE_DIRECTORY);
 		currentBuffer = 1;
 		urls = new HashSet<String>();
 
@@ -92,18 +92,14 @@ public class Main {
 			return;
 		}
 
-		// Otherwise, begin processing.
-		ProcessingBundle bundle = null;
+		// Otherwise, begin processing the current buffer.
 		if (currentBuffer == 1) {
 			buffer1.setProcessing(true);
-			bundle = new ProcessingBundle(buffer1.getTweets(), currentBuffer,
-					SAVE_DIRECTORY);
 			currentBuffer = 2;
+
 		} else {
 			if (currentBuffer == 2) {
 				buffer2.setProcessing(true);
-				bundle = new ProcessingBundle(buffer2.getTweets(),
-						currentBuffer, SAVE_DIRECTORY);
 				currentBuffer = 1;
 			} else {
 				return;

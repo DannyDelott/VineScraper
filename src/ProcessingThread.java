@@ -1,10 +1,5 @@
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashSet;
-
-import org.apache.commons.io.FileUtils;
 
 import twitter4j.Status;
 
@@ -13,7 +8,7 @@ public class ProcessingThread implements Runnable {
 	private HashSet<Status> tweets;
 	private int buffer;
 	private HashSet<String> urls;
-	private int numVinesScraped;
+	private int numVinesScraped = 0;
 	private String saveDirectory;
 	private ProcessingListener listener;
 
@@ -43,7 +38,7 @@ public class ProcessingThread implements Runnable {
 		for (Status status : tweets) {
 
 			// gets the Vine URL (eg: https://vine.co/v/OW0ei1Uauxv)
-			url = VineUtil.getVineUrl(status);
+			url = VineUtil.findVineUrl(status);
 			if (url == null) {
 				continue;
 			}
@@ -74,18 +69,11 @@ public class ProcessingThread implements Runnable {
 			}
 
 			// downloads the .mp4 video
-			try {
-				File f = new File(saveDirectory + status.getId() + ".mp4");
-				FileUtils.copyURLToFile(new URL(downloadUrl), f);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			// increases total quantity of vines collected
-			synchronized (this) {
-				numVinesScraped++;
+			if (VineUtil.downloadVine(saveDirectory, status.getId(),
+					downloadUrl)) {
+				synchronized (this) {
+					numVinesScraped++;
+				}
 			}
 		}
 

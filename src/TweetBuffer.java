@@ -4,11 +4,17 @@ import twitter4j.Status;
 
 public class TweetBuffer {
 
+	private int id;
+	private String saveDirectory;
+
 	private HashSet<Status> tweets;
 	private boolean isProcessing;
 
 	// constructor
-	public TweetBuffer() {
+	public TweetBuffer(int id, String saveDirectory) {
+		this.id = id;
+		this.saveDirectory = saveDirectory;
+
 		tweets = new HashSet<Status>();
 		isProcessing = false;
 	}
@@ -29,6 +35,14 @@ public class TweetBuffer {
 
 	public boolean isProcessing() {
 		return isProcessing;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getSaveDirectory() {
+		return saveDirectory;
 	}
 
 	// setters
