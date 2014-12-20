@@ -23,12 +23,6 @@ public class ProcessingThread implements Runnable {
 		this.listener = listener;
 	}
 
-	// interface
-	public interface ProcessingListener {
-		public void onProcessFinished(int buffer, HashSet<String> urls,
-				int scraped);
-	}
-
 	@Override
 	public void run() {
 

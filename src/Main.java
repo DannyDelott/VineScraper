@@ -8,16 +8,53 @@ import twitter4j.StatusListener;
 import twitter4j.TwitterStream;
 
 public class Main {
+	private static final int NUM_VINES_TO_DOWNLOAD = -1;
+	private static final int MIN_BUFFER_SIZE = 10;
 
 	private static TwitterStream twitter;
 	private static int numVinesScraped = 0;
-	private static final int NUM_VINES_TO_DOWNLOAD = -1;
 	private static final String SAVE_DIRECTORY = "vines/";
 
 	private static TweetBuffer buffer1, buffer2;
-	private static final int MIN_BUFFER_SIZE = 10;
-	private static int currentBuffer;
-	private static HashSet<String> urls;
+	private static int currentBufferId;
+	private static HashSet<String> duplicateUrls;
+
+	private static ProcessingListener finishListener = new ProcessingListener() {
+
+		@Override
+		public void onProcessFinished(int bufferId, HashSet<String> urls,
+				int numScraped) {
+
+			synchronized (this) {
+				duplicateUrls = urls;
+			}
+
+			numVinesScraped += numScraped;
+			if (numScraped != 0) {
+				System.out.println("Scraped " + numScraped
+						+ " vine(s) from buffer" + bufferId
+						+ ".  Total vines is now " + numVinesScraped + ".");
+			}
+
+			switch (bufferId) {
+			case 1:
+				buffer1.clearBuffer();
+				buffer1.setProcessing(false);
+				break;
+			case 2:
+				buffer2.clearBuffer();
+				buffer2.setProcessing(false);
+				break;
+			}
+
+			// stop scraping when threshold is reached
+			if (numVinesScraped >= NUM_VINES_TO_DOWNLOAD
+					&& (NUM_VINES_TO_DOWNLOAD != -1)) {
+				twitter.cleanUp();
+				twitter.shutdown();
+			}
+		}
+	};
 
 	public static void main(String[] args) {
 
@@ -32,8 +69,8 @@ public class Main {
 		// instantiates buffers
 		buffer1 = new TweetBuffer(1, SAVE_DIRECTORY);
 		buffer2 = new TweetBuffer(2, SAVE_DIRECTORY);
-		currentBuffer = 1;
-		urls = new HashSet<String>();
+		currentBufferId = 1;
+		duplicateUrls = new HashSet<String>();
 
 		// instantiates listener to fill and process the buffers
 		StatusListener listener = new StatusListener() {
@@ -41,12 +78,12 @@ public class Main {
 			@Override
 			public void onStatus(Status status) {
 
-				if ((currentBuffer == 1) && !buffer1.isProcessing()) {
+				if ((currentBufferId == 1) && !buffer1.isProcessing()) {
 					buffer1.addStatus(status);
 					return;
 				}
 
-				if ((currentBuffer == 2) && !buffer2.isProcessing()) {
+				if ((currentBufferId == 2) && !buffer2.isProcessing()) {
 					buffer2.addStatus(status);
 					return;
 				}
@@ -85,26 +122,36 @@ public class Main {
 
 		// Does nothing if the current buffer is already processing or
 		// if it contains fewer elements than the minimum buffer size.
-		if ((currentBuffer == 1 && (buffer1.isProcessing() || buffer1
+		if ((currentBufferId == 1 && (buffer1.isProcessing() || buffer1
 				.getTweets().size() < MIN_BUFFER_SIZE))
-				|| (currentBuffer == 2 && (buffer2.isProcessing() || buffer2
+				|| (currentBufferId == 2 && (buffer2.isProcessing() || buffer2
 						.getTweets().size() < MIN_BUFFER_SIZE))) {
 			return;
 		}
 
 		// Otherwise, begin processing the current buffer.
-		if (currentBuffer == 1) {
-			buffer1.setProcessing(true);
-			currentBuffer = 2;
+		try {
+			switch (currentBufferId) {
+			case 1:
+				buffer1.setProcessing(true);
+				currentBufferId = 2;
 
-		} else {
-			if (currentBuffer == 2) {
+				Thread t1 = new Thread(new ProcessingThread(buffer1,
+						duplicateUrls, finishListener));
+				t1.start();
+				break;
+
+			case 2:
 				buffer2.setProcessing(true);
-				currentBuffer = 1;
-			} else {
-				return;
-			}
-		}
+				currentBufferId = 1;
 
+				Thread t2 = new Thread(new ProcessingThread(buffer2,
+						duplicateUrls, finishListener));
+				t2.start();
+				break;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
 	}
 }

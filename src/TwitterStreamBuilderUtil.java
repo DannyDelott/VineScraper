@@ -14,7 +14,6 @@ public class TwitterStreamBuilderUtil {
 		cb.setOAuthAccessTokenSecret("*********************************************");
 
 		return new TwitterStreamFactory(cb.build()).getInstance();
-
 	}
 
 }

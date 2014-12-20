@@ -37,15 +37,13 @@ public class VineUtil {
 
 		// parses out the .mp4 file path
 		try {
-			String[] split = html.split("\"twitter:player:stream\" content=\"");
+			String[] split = html.split("player:stream\" content=\"");
 			split = split[1].split("\\?versionId");
 			return split[0];
 
 		} catch (ArrayIndexOutOfBoundsException e1) {
-			e1.printStackTrace();
+			return null;
 		}
-
-		return null;
 	}
 
 	public static boolean downloadVine(String saveDirectory, long id,
@@ -53,13 +51,12 @@ public class VineUtil {
 		try {
 			File f = new File(saveDirectory + id + ".mp4");
 			FileUtils.copyURLToFile(new URL(downloadUrl), f);
+			return true;
 		} catch (MalformedURLException e) {
 			return false;
 		} catch (IOException e) {
 			return false;
 		}
-
-		return true;
 	}
 
 	public static String sendGet(String u) throws IOException {
