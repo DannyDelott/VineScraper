@@ -30,8 +30,8 @@ public class VineUtil {
 	public static String parseDownloadUrl(String html) {
 
 		// if 404 or the url suffix is missing from the html
-		if (html == null || html.contains("Page not found")
-				|| html.contains("<title>Vine</title>")) {
+		if (html == null || html.contains("Page not found") {
+			//	|| html.contains("<title>Vine</title>")) {
 			return null;
 		}
 
